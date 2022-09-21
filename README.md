@@ -9,6 +9,7 @@ NMEA GNS message type
 
 *Example*: $GNGNS,103600.01,5114.51176,N,00012.29380,W,ANNN,07,1.18,111.5,45.6,,,V*00
 
-### Publisher output topic
+## Publisher output topic
 NMEA message parsed using [pynmeagps module](https://pypi.org/project/pynmeagps/)
+
 [NavSatFix](http://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/NavSatFix.html) message with latitude, longitude and altitude
