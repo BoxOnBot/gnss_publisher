@@ -17,7 +17,7 @@ from rclpy.node import Node
 from pynmeagps import NMEAReader
 import serial
 
-from std_msgs.msg import String
+# from std_msgs.msg import String
 from sensor_msgs.msg import NavSatFix
 
 ser = serial.Serial('/dev/ttyACM0', 9600)
@@ -35,13 +35,16 @@ class GNSSpublisher(Node):
         # nmeagns_message = NMEAReader.parse("$GNGNS,103600.01,5114.51176,N,00012.29380,W,ANNN,07,1.18,111.5,45.6,,,V*00")
         nmeagns_message = NMEAReader.parse(ser.readline())
         gnss_msg = NavSatFix()
+        UTC_time = nmeagns_message.time.strftime("%X")
         # gnss_msg.header.stamp = nmeagns_message.time
+        t = self.get_clock().now()
+        gnss_msg.header.stamp = t.to_msg()
         gnss_msg.header.frame_id = "gnss"
         gnss_msg.latitude = float(nmeagns_message.lat)
         gnss_msg.longitude = float(nmeagns_message.lon)
         gnss_msg.altitude = float(nmeagns_message.alt)
         self.gnss_publisher_.publish(gnss_msg)
-        self.get_logger().info('Publishing: data %d, long =  %f, lat = %f, alt = %f' % (self.i, gnss_msg.longitude, gnss_msg.latitude, gnss_msg.altitude))
+        self.get_logger().info('Publishing: data %d, time = %s, long =  %f, lat = %f, alt = %f' % (self.i, UTC_time, gnss_msg.longitude, gnss_msg.latitude, gnss_msg.altitude))
         self.i += 1
 
 
