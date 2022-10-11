@@ -15,12 +15,24 @@
 import rclpy
 from rclpy.node import Node
 from pynmeagps import NMEAReader
-import serial
 
 # from std_msgs.msg import String
 from sensor_msgs.msg import NavSatFix
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+import os
+import errno
+
+# read from pipe 
+pipe = 'gnss_pipe'
+
+try:
+    os.mkfifo(pipe)
+except OSError as oe:
+    if oe.errno != errno.EEXIST:
+        raise
+
+fifo = open(pipe)
+
 
 class GNSSpublisher(Node):
 
@@ -33,7 +45,7 @@ class GNSSpublisher(Node):
 
     def publish_gnss(self):
         # nmeagns_message = NMEAReader.parse("$GNGNS,103600.01,5114.51176,N,00012.29380,W,ANNN,07,1.18,111.5,45.6,,,V*00")
-        nmeagns_message = NMEAReader.parse(ser.readline())
+        nmeagns_message = NMEAReader.parse(fifo.read())
         gnss_msg = NavSatFix()
         UTC_time = nmeagns_message.time.strftime("%X")
         # gnss_msg.header.stamp = nmeagns_message.time
