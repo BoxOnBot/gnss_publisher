@@ -1,8 +1,11 @@
 # gnss_publisher
 A simple ROS2 publisher in Python to take in serial data and publish LLH using NavSatFix messages
 
-## Serial input
+## Serial input (Optional)
 /dev/ttyACM0
+
+## Read from file (Optional)
+Reads from a file (reads the last line), however the path and file name must be edited first
 
 ## Input type
 NMEA GNS message type
