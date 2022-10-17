@@ -15,12 +15,24 @@
 import rclpy
 from rclpy.node import Node
 from pynmeagps import NMEAReader
-import serial
+# import serial
 
 # from std_msgs.msg import String
 from sensor_msgs.msg import NavSatFix
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+# for serial read
+# ser = serial.Serial('/dev/ttyACM0', 9600)
+
+# for reading through a file
+def readFile(file):
+    f = open(file, "r")
+    # Read line by line.
+    for line in f:
+        pass
+    return line
+
+# change to the correct path
+filePath = "/home/ching/GNSS/data/edited_GNSS_data.txt"
 
 class GNSSpublisher(Node):
 
@@ -33,7 +45,10 @@ class GNSSpublisher(Node):
 
     def publish_gnss(self):
         # nmeagns_message = NMEAReader.parse("$GNGNS,103600.01,5114.51176,N,00012.29380,W,ANNN,07,1.18,111.5,45.6,,,V*00")
-        nmeagns_message = NMEAReader.parse(ser.readline())
+        # nmeagns_message = NMEAReader.parse(ser.readline())
+        
+        # change file name to actual file
+        nmeagns_message = NMEAReader.parse(readFile(filePath))
         gnss_msg = NavSatFix()
         UTC_time = nmeagns_message.time.strftime("%X")
         # gnss_msg.header.stamp = nmeagns_message.time
