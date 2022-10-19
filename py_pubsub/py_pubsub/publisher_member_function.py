@@ -24,15 +24,15 @@ from sensor_msgs.msg import NavSatFix
 # ser = serial.Serial('/dev/ttyACM0', 9600)
 
 # for reading through a file
-def readFile(file):
+def readPipe(file):
     f = open(file, "r")
-    # Read line by line.
-    for line in f:
-        pass
+    content = f.readline()
+    # used for testing as the $ symbol cannot be echoed out
+    line = "$" + content[3:]
     return line
 
-# change to the correct path
-filePath = "/home/ching/GNSS/data/edited_GNSS_data.txt"
+# change to the correct path of the pipe
+filePath = "/home/ching/pipe0"
 
 class GNSSpublisher(Node):
 
@@ -47,8 +47,12 @@ class GNSSpublisher(Node):
         # nmeagns_message = NMEAReader.parse("$GNGNS,103600.01,5114.51176,N,00012.29380,W,ANNN,07,1.18,111.5,45.6,,,V*00")
         # nmeagns_message = NMEAReader.parse(ser.readline())
         
-        # change file name to actual file
-        nmeagns_message = NMEAReader.parse(readFile(filePath))
+        # line = readFile(filePath)
+        # if line in ['\n', '\r\n']:
+        #     pass
+        # else:
+            # change file name to actual file
+        nmeagns_message = NMEAReader.parse(readPipe(filePath))
         gnss_msg = NavSatFix()
         UTC_time = nmeagns_message.time.strftime("%X")
         # gnss_msg.header.stamp = nmeagns_message.time
